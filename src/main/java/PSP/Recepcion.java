@@ -11,6 +11,20 @@ public class Recepcion {
 
         Properties props = new Properties();
 
+        //Configuracion
+
+        props.put("mail.smtp.host", "sandbox.smtp.mailtrap.io");
+        props.put("mail.smtp.port", "2525");
+
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        //recepcion
+        props.put("mail.imap.host", "inbox.mailtrap.io");
+        props.put("mail.imap.port", "993");
+        props.put("mail.imap.ssl.enable", "true");
+
+
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -18,6 +32,25 @@ public class Recepcion {
             }
         });
 
+        //conectar al Store
+        try {
+            Store store= session.getStore("imap");
+            store.connect("tu_usuario_mailtrap", "tu_pass_mailtrap");
+
+            //abrir inbox y leer
+            Folder inbox = store.getFolder("INBOX");
+            inbox.open(Folder.READ_ONLY);
+
+            Message[] messages = inbox.getMessages();
+            for (Message m : messages){
+                System.out.println("Asunto: " + m.getSubject());
+            }
+
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         try {
             MimeMessage msg = new MimeMessage(session);
 
@@ -30,7 +63,6 @@ public class Recepcion {
                 Transport.send(msg);
                 System.out.println("ENviado");
             } catch (MessagingException e) {
-                // Captura la excepción de la mensajería
                 throw new RuntimeException(e);
             }
 
