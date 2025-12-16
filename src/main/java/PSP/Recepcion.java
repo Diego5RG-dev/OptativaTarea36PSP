@@ -24,6 +24,12 @@ public class Recepcion {
         props.put("mail.imap.port", "993");
         props.put("mail.imap.ssl.enable", "true");
 
+        //timeouts
+        props.put("mail.imap.connectiontimeout", "10000");
+        props.put("mail.imap.timeout", "10000");
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.smtp.timeout", "10000");
+
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
